@@ -3,7 +3,7 @@
 <th:block th:replace="~{layout/head :: head}"></th:block>
 <link rel="stylesheet" href="/css/playerPage.css">
 <body>
-
+  <input type="hidden" th:value="${videoId}" id="video-id">
   <header>
     <div class="logo">
       <a href="/">
@@ -108,13 +108,13 @@
               <li th:each="reply : ${comment.reply}">
                 <!-- 여기부터 -->
                 <div class="replyget">
-                  <input type="hidden" th:id="${reply.id}" th:value="${reply.id}">
+                  <input type="hidden" th:id="|reply-id-${reply.id}|" th:value="${reply.id}">
                   <input type="hidden" th:id="${reply.parentId}" th:value="${reply.parentId}">
                   <input class="replyPostName" id="replyPostName" name="username" type="text" th:value="${reply.username}" readonly>
-                  <textarea class="replyPostInput" id="replyPostContent" name="username" type="text" th:text="${reply.content}" style="resize:none;" readonly></textarea>
-                  <div class="replyMode">
-                    <input type="hidden" th:value="${comment?.videoId}" class="video-id">
-                    <button type="button" class="btn replyModify" th:onclick="replyUpdateButton()">수정</button>
+                  <textarea class="replyPostInput" th:id="|replyPostContent-${reply.id}|" name="username" type="text" th:text="${reply.content}" style="resize:none;" readonly></textarea>
+                  <div class="replyMode" th:id="|replyMode-${reply.id}|">
+                    <button type="button" class="btn replyModify" th:data-id="${reply.id}"
+                            th:onclick="replyUpdateButton(this.getAttribute('data-id'))">수정</button>
                     <button type="button" class="btn-delete replyDelete" th:data-parentId="${reply.parentId}" th:data-id="${reply.id}"
                             th:onclick="replyDelete(
                               this.getAttribute('data-id'),
