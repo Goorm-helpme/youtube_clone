@@ -317,6 +317,21 @@ textarea:focus {
     border-bottom:1px solid var(--grey-dark-color);
 }
 
+input[class="replyPostName"],
+textarea[class="replyPostInput"]{
+    border:none;
+    display:inline-block;
+    width:100%;
+    margin-bottom:var(--padding);
+    margin-top:var(--padding);
+}
+
+input[class="replyPostName"]:focus,
+textarea[class="replyPostInput"]:focus{
+    outline:none;
+    border-bottom:1px solid var(--grey-dark-color);
+}
+
 .commentGet > div {
   margin-bottom: var(--padding);
 }

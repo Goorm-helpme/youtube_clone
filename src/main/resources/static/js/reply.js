@@ -25,12 +25,13 @@ function replyUpdate() {
         id : document.getElementById("reply-id").value,
         content : document.getElementById("replyPostContent").value,
     }
+    let videoId = document.querySelector(".video-id").value;
     httpRequest = new XMLHttpRequest();
     httpRequest.open("POST","/reply/update", true);
     httpRequest.responseType = "json";
     httpRequest.setRequestHeader("Content-Type","application/json");
     httpRequest.send(JSON.stringify(data));
     setTimeout(function(){
-        window.location.href="/player";
+        window.location.href="/video?id=" + videoId;
     }, 300);
 }

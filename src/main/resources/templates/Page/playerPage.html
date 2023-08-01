@@ -36,10 +36,11 @@
         </div>
         <ul class="actions">
           <li>
-            <button th:data-id="${videoId}" th:onclick="clickLike(this.getAttribute('data-id'))"><i
+            <button type="button" th:data-id="${videoId}" th:onclick="clickLike(this.getAttribute('data-id'))"><i
                     class="fas fa-thumbs-up"></i><span th:text="${heart.like}"></span></button>
-
-            <button th:data-id="${videoId}" th:onclick="clickDisLike(this.getAttribute('data-id'))"><i
+          </li>
+          <li>
+            <button type="button" th:data-id="${videoId}" th:onclick="clickDisLike(this.getAttribute('data-id'))"><i
                     class="fas fa-thumbs-down"></i><span th:text="${heart.dislike}">0</span></button>
           </li>
           <li>
@@ -60,15 +61,15 @@
               <span class="subscribers">구독자 100만명</span>
           </div>
         </div>
-        <button class="subscribe">구독</button>
+        <button type="button" class="subscribe">구독</button>
       </div>
     </section>
 
     <form th:action="|/video/comment/create/${videoId}|" method="post" id="commentComit" class="comment">
       <div class="commentPost">
-        <input name="commentName" class="commentPostName" type="text" placeholder="닉네임 등록...">
+        <input name="commentName" class="commentPostName" type="text" placeholder="닉네임 등록..." required>
         <div class="commentPostContent">
-          <textarea name="commentContent" class="commentPostInput" type="text" value="" placeholder="댓글 추가..."></textarea>
+          <textarea name="commentContent" class="commentPostInput" type="text" value="" placeholder="댓글 추가..." required></textarea>
           <input type="submit" class="btn CommentPosting" value="등록">
         </div>
       </div>
@@ -79,24 +80,26 @@
       <li th:each="comment : ${commentList}">
         <!-- 댓글 -->
         <div class="commentGet">
-          <div class="commentGetName" th:text="${comment?.commentName}"></div>
-          <div class="commentGetContent" th:text="${comment?.commentContent}"></div>
-          <div class="commentfuncion">
-            <button class="btn replyPostEdit">답글</button>
-            <div class="commentMode">
-              <button class="btn commentModify">수정</button>
-              <a th:onclick="onDelete([[${comment?.commentId}]]);" class="btn-delete commentDelet">삭제</a>
+          <form th:action="|/video/comment/updated/${comment?.commentId}|" method="post" class="commentModifyForm">
+            <input name="commentName" class="commentGetName" th:value="${comment?.commentName}" readonly>
+            <textarea name="commentContent" class="commentGetContent" th:text="${comment?.commentContent}" style="resize:none;" readonly></textarea>
+            <div class="commentfuncion">
+              <button type="button" class="btn replyPostEdit">답글</button>
+              <div class="commentMode">
+                <button type="button" class="btn-modify commentModify">수정</button>
+                <a th:onclick="onDelete([[${comment?.commentId}]]);" class="btn-delete commentDelet">삭제</a>
+              </div>
             </div>
-          </div>
+          </form>
           <!-- 대댓글 -->
           <div id="replys" class="hidden">
             <form action="/reply/save" id="reply" method="post">
               <div class="replyPost">
                 <input type="hidden" name="parentId" th:value="${comment.commentId}">
                 <input type="hidden" name="boardId" th:value="${comment.boardId}">
-                <input class="replyPostName" name="username" type="text" placeholder="닉네임 등록..."></input>
+                <input class="replyPostName" name="username" type="text" placeholder="닉네임 등록..." required>
                 <div class="replyPostContent">
-                  <textarea class="replyPostInput" name="content" type="text" value="" placeholder="답글 추가..."></textarea>
+                  <textarea class="replyPostInput" name="content" type="text" value="" placeholder="답글 추가..." required></textarea>
                   <input type="submit" class="btn ReplyPosting" value="등록"></input>
                 </div>
               </div>
@@ -105,13 +108,14 @@
               <li th:each="reply : ${comment.reply}">
                 <!-- 여기부터 -->
                 <div class="replyget">
-                  <input type="hidden" id="reply-id" th:value="${reply.id}">
-                  <input type="hidden" id="parent-id" th:value="${reply.parentId}">
+                  <input type="hidden" th:id="${reply.id}" th:value="${reply.id}">
+                  <input type="hidden" th:id="${reply.parentId}" th:value="${reply.parentId}">
                   <input class="replyPostName" id="replyPostName" name="username" type="text" th:value="${reply.username}" readonly>
-                  <input class="replyPostInput" id="replyPostContent" name="username" type="text" th:value="${reply.content}" readonly>
+                  <textarea class="replyPostInput" id="replyPostContent" name="username" type="text" th:text="${reply.content}" style="resize:none;" readonly></textarea>
                   <div class="replyMode">
-                    <button class="btn replyModify" onclick="replyUpdateButton()">수정</button>
-                    <button class="btn-delete replyDelete" th:data-parentId="${reply.parentId}" th:data-id="${reply.id}"
+                    <input type="hidden" th:value="${comment?.videoId}" class="video-id">
+                    <button type="button" class="btn replyModify" th:onclick="replyUpdateButton()">수정</button>
+                    <button type="button" class="btn-delete replyDelete" th:data-parentId="${reply.parentId}" th:data-id="${reply.id}"
                             th:onclick="replyDelete(
                               this.getAttribute('data-id'),
                               this.getAttribute('data-parentId'))">삭제</button>

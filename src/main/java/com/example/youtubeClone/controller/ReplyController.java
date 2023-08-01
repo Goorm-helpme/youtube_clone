@@ -1,6 +1,7 @@
 package com.example.youtubeClone.controller;
 
 import com.example.youtubeClone.dto.Reply;
+import com.example.youtubeClone.service.CommentService;
 import com.example.youtubeClone.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import java.util.Map;
 public class ReplyController {
 
     private final ReplyService replyService;
+    private final CommentService commentService;
 
     @PostMapping("/save")
     public String replySave(@ModelAttribute ReplyForm replyForm) {
@@ -24,8 +26,9 @@ public class ReplyController {
         reply.setBoardId(replyForm.getBoardId());
         reply.setDateTime(LocalDateTime.now().toString());
         replyService.addReply(replyForm.getParentId(), reply);
+        String videoId = commentService.findCommentOne(replyForm.getParentId()).getVideoId();
 
-        return "redirect:/";
+        return "redirect:/video?id=" + videoId;
     }
 
     @PostMapping("/update")
@@ -35,8 +38,9 @@ public class ReplyController {
         reply.setContent(replyForm.getContent());
         reply.setDateTime(LocalDateTime.now().toString());
         replyService.updateReply(reply.getId(), reply);
+        String videoId = commentService.findCommentOne(replyForm.getParentId()).getVideoId();
 
-        return "redirect:/";
+        return "redirect:/video?id=" + videoId;
     }
 
     @DeleteMapping("/delete")
